@@ -21,13 +21,16 @@ req-articles-get:
 	curl -v $(HOST):$(PORT)/articles/$(ARTICLE_ID)
 
 req-articles-post:
-	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)", "user_id": $(ARTICLE_USER_ID) }'
+	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)" }'
 
 req-articles-update:
-	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID) -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)", "user_id": $(ARTICLE_USER_ID)}'
+	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID) -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)"}'
 
 req-articles-delete:
 	curl -v -XDELETE -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID)
+
+req-comments:
+	curl -v $(HOST):$(PORT)/comments
 
 req-public:
 	curl -v $(HOST):$(PORT)/public
