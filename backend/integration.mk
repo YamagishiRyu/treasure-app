@@ -3,9 +3,9 @@ PORT := 1991
 HOST := localhost
 TOKEN_FILE := .idToken
 
-ARTICLE_ID:=1
-ARTICLE_TITLE:=title
-ARTICLE_BODY:=body
+ARTICLE_ID:=5
+ARTICLE_TITLE:=titleeeeeeeeeeee
+ARTICLE_BODY:=body2
 ARTICLE_USER_ID:=1
 
 create-token:
@@ -24,7 +24,7 @@ req-articles-post:
 	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)", "user_id": $(ARTICLE_USER_ID) }'
 
 req-articles-update:
-	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID) -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)"}'
+	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID) -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)", "user_id": $(ARTICLE_USER_ID)}'
 
 req-articles-delete:
 	curl -v -XDELETE -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID)

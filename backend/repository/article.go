@@ -9,7 +9,7 @@ import (
 
 func AllArticle(db *sqlx.DB) ([]model.Article, error) {
 	a := make([]model.Article, 0)
-	if err := db.Select(&a, `SELECT id, title, body FROM article`); err != nil {
+	if err := db.Select(&a, `SELECT id, title, body, user_id FROM article`); err != nil {
 		return nil, err
 	}
 	return a, nil
@@ -18,7 +18,7 @@ func AllArticle(db *sqlx.DB) ([]model.Article, error) {
 func FindArticle(db *sqlx.DB, id int64) (*model.Article, error) {
 	a := model.Article{}
 	if err := db.Get(&a, `
-SELECT id, title, body FROM article WHERE id = ?
+SELECT id, title, body, user_id FROM article WHERE id = ?
 `, id); err != nil {
 		return nil, err
 	}
@@ -38,13 +38,13 @@ INSERT INTO article (title, body, user_id) VALUES (?, ?, ?)
 
 func UpdateArticle(db *sqlx.Tx, id int64, a *model.Article) (sql.Result, error) {
 	stmt, err := db.Prepare(`
-UPDATE article SET title = ?, body = ? WHERE id = ?
+UPDATE article SET title = ?, body = ?, user_id = ? WHERE id = ?
 `)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	return stmt.Exec(a.Title, a.Body, id)
+	return stmt.Exec(a.Title, a.Body, a.UserID, id)
 }
 
 func DestroyArticle(db *sqlx.Tx, id int64) (sql.Result, error) {
