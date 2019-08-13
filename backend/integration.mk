@@ -6,6 +6,7 @@ TOKEN_FILE := .idToken
 ARTICLE_ID:=1
 ARTICLE_TITLE:=title
 ARTICLE_BODY:=body
+ARTICLE_USER_ID:=1
 
 create-token:
 	go run ./cmd/customtoken/main.go $(UID) $(TOKEN_FILE)
@@ -20,7 +21,7 @@ req-articles-get:
 	curl -v $(HOST):$(PORT)/articles/$(ARTICLE_ID)
 
 req-articles-post:
-	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)"}'
+	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)", "user_id": $(ARTICLE_USER_ID) }'
 
 req-articles-update:
 	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID) -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)"}'
