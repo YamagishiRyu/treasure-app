@@ -80,11 +80,14 @@ func (s *Server) Route() *mux.Router {
 	r.Methods(http.MethodGet).Path("/private").Handler(authChain.Then(sample.NewPrivateHandler(s.dbx)))
 
 	articleController := controller.NewArticle(s.dbx)
+	commentController := controller.NewComment(s.dbx)
 	r.Methods(http.MethodPost).Path("/articles").Handler(authChain.Then(AppHandler{articleController.Create}))
 	r.Methods(http.MethodPut).Path("/articles/{id}").Handler(authChain.Then(AppHandler{articleController.Update}))
 	r.Methods(http.MethodDelete).Path("/articles/{id}").Handler(authChain.Then(AppHandler{articleController.Destroy}))
 	r.Methods(http.MethodGet).Path("/articles").Handler(commonChain.Then(AppHandler{articleController.Index}))
 	r.Methods(http.MethodGet).Path("/articles/{id}").Handler(commonChain.Then(AppHandler{articleController.Show}))
+	r.Methods(http.MethodPost).Path("/articles/{id}/comment").Handler(authChain.Then(AppHandler{commentController.Create}))
+	r.Methods(http.MethodGet).Path("/comments").Handler(commonChain.Then(AppHandler{commentController.Index}))
 
 	r.PathPrefix("").Handler(commonChain.Then(http.StripPrefix("/img", http.FileServer(http.Dir("./img")))))
 	return r

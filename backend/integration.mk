@@ -32,6 +32,10 @@ req-articles-delete:
 req-comments:
 	curl -v $(HOST):$(PORT)/comments
 
+req-comment-post:
+	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID)/comment -d '{"title": "$(ARTICLE_TITLE)", "body": "$(ARTICLE_BODY)" }'
+
+
 req-public:
 	curl -v $(HOST):$(PORT)/public
 
