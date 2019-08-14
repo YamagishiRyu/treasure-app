@@ -15,13 +15,20 @@ func AllArticle(db *sqlx.DB) ([]model.Article, error) {
 	return a, nil
 }
 
-func FindArticle(db *sqlx.DB, id int64) (*model.Article, error) {
-	a := model.Article{}
+func FindArticle(db *sqlx.DB, id int64) (*model.ArticleWithTag, error) {
+	a := model.ArticleWithTag{}
 	if err := db.Get(&a, `
 SELECT id, title, body FROM article WHERE id = ?
 `, id); err != nil {
 		return nil, err
 	}
+	tags := make([]model.Tag, 0)
+	if err := db.Select(&tags, `
+SELECT tag.id, tag.name FROM tag join tag_article ON tag.id = tag_article.tag_id WHERE tag_article.article_id = ?
+`, id); err != nil {
+		return nil, err
+	}
+	a.Tags = tags
 	return &a, nil
 }
 

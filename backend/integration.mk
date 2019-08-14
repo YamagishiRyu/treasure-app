@@ -3,7 +3,7 @@ PORT := 1991
 HOST := localhost
 TOKEN_FILE := .idToken
 
-ARTICLE_ID:=5
+ARTICLE_ID:=1
 ARTICLE_TITLE:=titleeeeeeeeeeee
 ARTICLE_BODY:=body2
 ARTICLE_USER_ID:=1

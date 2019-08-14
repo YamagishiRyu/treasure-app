@@ -14,3 +14,11 @@ type ArticleWithComments struct {
 	UserID   *int64    `db:"user_id" json:"user_id"`
 	Comments []Comment `db:"comments" json:"comments"`
 }
+
+type ArticleWithTag struct {
+	ID     int64  `db:"id" json:"id"`
+	Title  string `db:"title" json:"title"`
+	Body   string `db:"body" json:"body"`
+	UserID *int64 `db:"user_id" json:"user_id"`
+	Tags   []Tag  `db:"tags" json:"tags"`
+}
