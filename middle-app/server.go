@@ -51,6 +51,7 @@ func (s *Server) Route() *mux.Router {
 	repo := r.PathPrefix("/repositories").Subrouter()
 
 	repo.Methods(http.MethodGet).Path("/").Handler(AppHandler{repositoryController.Create})
+	repo.Methods(http.MethodGet).Path("/search").Handler(AppHandler{repositoryController.Search})
 
 	return r
 }
