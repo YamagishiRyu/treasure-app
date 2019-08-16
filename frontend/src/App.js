@@ -29,8 +29,9 @@ class App extends Component {
         return getPrivateMessage(token);
       })
       .then(resp => {
+        console.log(resp)
         this.setState({
-          message: resp.message
+          message: JSON.stringify(resp)
         });
       })
       .catch(error => {
