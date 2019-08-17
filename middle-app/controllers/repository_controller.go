@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/YamagishiRyu/treasure-app/middle-app/models"
+	"github.com/YamagishiRyu/treasure-app/middle-app/repositories"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/gommon/log"
 )
@@ -47,6 +48,16 @@ func (rc *RepositoryController) Search(w http.ResponseWriter, r *http.Request) (
 	}
 
 	return http.StatusOK, re.Items, nil
+}
+
+func (rc *RepositoryController) Index(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+	repos, err := repositories.AllRepositories(rc.dbx, 1)
+	if err != nil {
+		log.Error(err)
+		return http.StatusBadRequest, nil, err
+	}
+
+	return http.StatusCreated, repos, nil
 }
 
 func (rc *RepositoryController) Create(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {

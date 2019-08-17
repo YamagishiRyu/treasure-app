@@ -50,7 +50,8 @@ func (s *Server) Route() *mux.Router {
 	repositoryController := controllers.NewRepositoryController(s.dbx)
 	repo := r.PathPrefix("/repositories").Subrouter()
 
-	repo.Methods(http.MethodGet).Path("/").Handler(AppHandler{repositoryController.Create})
+	repo.Methods(http.MethodGet).Path("/").Handler(AppHandler{repositoryController.Index})
+	repo.Methods(http.MethodGet).Path("/clone").Handler(AppHandler{repositoryController.Create})
 	repo.Methods(http.MethodGet).Path("/search").Handler(AppHandler{repositoryController.Search})
 
 	return r
