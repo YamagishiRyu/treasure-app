@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/YamagishiRyu/treasure-app/middle-app/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/gommon/log"
 )
@@ -35,23 +36,17 @@ func (rc *RepositoryController) Search(w http.ResponseWriter, r *http.Request) (
 
 	reader, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
 		log.Error(err)
 		return http.StatusBadRequest, nil, err
 	}
 
-	fmt.Println("aaa")
-	fmt.Printf("%v", reader)
-	fmt.Println("bbb")
-	v, err := fmt.Println(reader)
-	if err != nil {
-		fmt.Println(err)
+	var re models.GitResponse
+	if err := json.Unmarshal(reader, &re); err != nil {
 		log.Error(err)
 		return http.StatusBadRequest, nil, err
 	}
-	fmt.Print(v)
 
-	return http.StatusOK, string(reader), nil
+	return http.StatusOK, re.Items, nil
 }
 
 func (rc *RepositoryController) Create(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
