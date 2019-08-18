@@ -14,11 +14,27 @@ type Mdfile struct {
 	RepositoryID int64  `db:"repository_id" json:"repository_id"`
 }
 
-func (m Mdfile) GetText() (string, error) {
+func (m *Mdfile) GetText() (string, error) {
 	data, err := ioutil.ReadFile(m.Path)
 	if err != nil {
 		log.Error(err)
 		return "", err
 	}
 	return string(data), nil
+}
+
+func (m *Mdfile) MapToMdfileWithText() (*MdfileWithText, error) {
+	text, err := m.GetText()
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	return &MdfileWithText{
+		ID:           m.ID,
+		Name:         m.Name,
+		Text:         text,
+		URL:          m.URL,
+		RepositoryID: m.RepositoryID,
+	}, nil
 }
