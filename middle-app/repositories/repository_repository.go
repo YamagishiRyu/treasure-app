@@ -68,3 +68,14 @@ func CreateMdfiles(db *sqlx.DB, mdfiles []models.Mdfile) (sql.Result, error) {
 	stmt := fmt.Sprintf("INSERT INTO mdfiles (name, path, repository_id) VALUES %s", strings.Join(valueString, ","))
 	return db.Exec(stmt, valueArgs...)
 }
+
+func SelectMdfilesFromRepository(db *sqlx.DB, repository_id int64) ([]models.Mdfile, error) {
+	mdfiles := make([]models.Mdfile, 0)
+	query := `
+	SELECT id, name, path, url, repository_id FROM mdfiles WHERE repository_id = ? 
+	`
+	if err := db.Select(&mdfiles, query, repository_id); err != nil {
+		return nil, err
+	}
+	return mdfiles, nil
+}
