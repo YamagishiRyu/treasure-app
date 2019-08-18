@@ -8,10 +8,13 @@ import (
 	"net/http"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 
+	"github.com/YamagishiRyu/treasure-app/middle-app/httputil"
 	"github.com/YamagishiRyu/treasure-app/middle-app/models"
 	"github.com/YamagishiRyu/treasure-app/middle-app/repositories"
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/gommon/log"
 )
@@ -76,7 +79,7 @@ func (rc *RepositoryController) Create(w http.ResponseWriter, r *http.Request) (
 	userId := int64(1)
 	response := map[string]string{}
 
-	repo, err := repositories.FindRepository(rc.dbx, repoName)
+	repo, err := repositories.FindRepositoryFromName(rc.dbx, repoName)
 	if err != nil {
 		// new repository
 		cmd := exec.Command("sh", "./clone_cmd.sh", repoName)
@@ -153,4 +156,42 @@ func (rc *RepositoryController) Create(w http.ResponseWriter, r *http.Request) (
 	}
 
 	return http.StatusCreated, response, nil
+}
+
+func (rc *RepositoryController) Show(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return http.StatusBadRequest, nil, &httputil.HTTPError{Message: "invalid path parameter"}
+	}
+	repo_id, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return http.StatusBadRequest, nil, err
+	}
+
+	repo, err := repositories.FindRepositoryFromId(rc.dbx, repo_id)
+	if err != nil {
+		log.Error(err)
+		return http.StatusBadRequest, nil, err
+	}
+
+	mdfiles, err := repositories.SelectMdfilesFromRepository(rc.dbx, repo.ID)
+	if err != nil {
+		log.Error(err)
+		return http.StatusBadRequest, nil, err
+	}
+
+	mdfileWithTexts := make([]models.MdfileWithText, 0)
+	for _, mdfile := range mdfiles {
+		withText, err := mdfile.MapToMdfileWithText()
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		mdfileWithTexts = append(mdfileWithTexts, *withText)
+	}
+
+	detail := repo.MapToDetail(mdfileWithTexts)
+
+	return http.StatusOK, detail, nil
 }
