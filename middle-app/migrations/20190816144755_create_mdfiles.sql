@@ -4,7 +4,7 @@ CREATE TABLE mdfiles (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   path VARCHAR(255) NOT NULL,
-  url VARCHAR(255) NOT NULL,
+  url VARCHAR(255),
   repository_id INT UNSIGNED NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(repository_id) REFERENCES repositories(id)
