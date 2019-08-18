@@ -22,7 +22,19 @@ func AllRepositories(db *sqlx.DB, user_id int64) ([]models.Repository, error) {
 	return repos, nil
 }
 
-func FindRepository(db *sqlx.DB, name string) (*models.Repository, error) {
+func FindRepositoryFromId(db *sqlx.DB, id int64) (*models.Repository, error) {
+	repo := models.Repository{}
+
+	query := `SELECT id, name, path, url FROM repositories WHERE id = ?`
+	if err := db.Get(&repo, query, id); err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	return &repo, nil
+}
+
+func FindRepositoryFromName(db *sqlx.DB, name string) (*models.Repository, error) {
 	repo := models.Repository{}
 
 	query := `SELECT id, name, path, url FROM repositories WHERE name = ?`
@@ -74,8 +86,23 @@ func SelectMdfilesFromRepository(db *sqlx.DB, repository_id int64) ([]models.Mdf
 	query := `
 	SELECT id, name, path, url, repository_id FROM mdfiles WHERE repository_id = ? 
 	`
-	if err := db.Select(&mdfiles, query, repository_id); err != nil {
+	rows, err := db.Query(query, repository_id)
+	if err != nil {
 		return nil, err
 	}
+
+	for rows.Next() {
+		mdfile := models.Mdfile{}
+		nullURL := new(sql.NullString)
+		if err := rows.Scan(&mdfile.ID, &mdfile.Name, &mdfile.Path, nullURL, &mdfile.RepositoryID); err != nil {
+			log.Error(err)
+			continue
+		}
+		if nullURL.Valid {
+			mdfile.URL = nullURL.String
+		}
+		mdfiles = append(mdfiles, mdfile)
+	}
+
 	return mdfiles, nil
 }
