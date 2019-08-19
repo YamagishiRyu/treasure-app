@@ -52,6 +52,10 @@ func (s *Server) Route() *mux.Router {
 	corsMiddleware := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedHeaders: []string{"Authorization"},
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+		},
 	})
 
 	commonChain := alice.New(
@@ -63,7 +67,7 @@ func (s *Server) Route() *mux.Router {
 	repo := r.PathPrefix("/repositories").Subrouter()
 
 	repo.Methods(http.MethodGet).Path("/").Handler(commonChain.Then(AppHandler{repositoryController.Index}))
-	repo.Methods(http.MethodGet).Path("/{id}").Handler(commonChain.Then(AppHandler{repositoryController.Show}))
+	repo.Methods(http.MethodGet).Path("/show/{id}").Handler(commonChain.Then(AppHandler{repositoryController.Show}))
 	repo.Methods(http.MethodGet).Path("/clone").Handler(commonChain.Then(AppHandler{repositoryController.Create}))
 	repo.Methods(http.MethodGet).Path("/search").Handler(commonChain.Then(AppHandler{repositoryController.Search}))
 

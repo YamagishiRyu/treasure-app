@@ -164,12 +164,14 @@ func (rc *RepositoryController) Show(w http.ResponseWriter, r *http.Request) (in
 	if !ok {
 		return http.StatusBadRequest, nil, &httputil.HTTPError{Message: "invalid path parameter"}
 	}
-	repo_id, err := strconv.ParseInt(id, 10, 64)
+
+	repoId, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
+		log.Error(err)
 		return http.StatusBadRequest, nil, err
 	}
 
-	repo, err := repositories.FindRepositoryFromId(rc.dbx, repo_id)
+	repo, err := repositories.FindRepositoryFromId(rc.dbx, repoId)
 	if err != nil {
 		log.Error(err)
 		return http.StatusBadRequest, nil, err
