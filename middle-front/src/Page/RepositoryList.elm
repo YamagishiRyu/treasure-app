@@ -136,9 +136,8 @@ getRepositories =
     Http.request
         { method = "GET"
         , headers =
-            [ Http.header "Content-Type" "application/json"
+            [ Http.header "Content-Type" "application/x-www-form-urlencoded"
             , Http.header "Accept" "application/json"
-            , Http.header "Access-Control-Allow-Origin" "*"
             ]
         , url = host
         , expect = Http.expectJson GotRepositories repositoriesDecoder
